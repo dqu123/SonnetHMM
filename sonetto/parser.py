@@ -56,6 +56,7 @@ class SonnetParser():
                     couplet = []
                     sonnet = []
                     next_sonnet = True
+                    line_num = 0
                     sonnet_num += 1
 
     def tokenize(self, line):
