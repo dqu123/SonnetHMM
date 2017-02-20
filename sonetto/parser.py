@@ -19,6 +19,10 @@ class SonnetParser():
 
         self.dict = cmudict.dict()
 
+        self.word_count = 0
+        self.word_to_num = {}
+        self.num_to_word = []
+
     def parse(self, fname, headers=True):
         """Parse a collection of sonnets."""
         with open(fname) as sonnet_file:
@@ -65,5 +69,13 @@ class SonnetParser():
         line = re.sub("[-?;:.,'!()]", " ", line)
         tokens = line.split()
 
-        words = [t.lower() for t in tokens if t.lower() in self.dict]
+        words = []
+        for token in tokens:
+            t = token.lower()
+            if t in self.dict:
+                words.append(t)
+                if t not in self.word_to_num:
+                    self.num_to_word.append(t)
+                    self.word_to_num[t] = self.word_count
+                    self.word_count += 1
         return words
