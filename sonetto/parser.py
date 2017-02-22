@@ -28,40 +28,26 @@ class SonnetParser():
         with open(fname) as sonnet_file:
             sonnet_num = 0
             line_num = 0
-            next_sonnet = True
-            stanza = []
-            couplet = []
             sonnet = []
             for line in sonnet_file:
-                # Ignore whitespace lines.
+                # Ignore whitespace lines and sonnet headers
                 if line.strip() == '':
+                    if not appended:
+                        self.sonnets.append(sonnet)
+                        sonnet = []
+                        appended = True
                     continue
-
-                if next_sonnet and headers:
-                    next_sonnet = False
+                elif line.strip().isdigit() or is_roman_numeral(line.strip()):
+                    appended = False
                     continue
-                line_num += 1
 
                 words = self.tokenize(line)
-                self.lines.append(words)
-                if line_num < COUPLET_LINE:
-                    stanza += words
-                else:
-                    couplet += words
-                sonnet += words
-
-                if line_num % LINES_PER_STANZA == 0:
-                    self.stanzas.append(stanza)
-                    stanza = []
-
-                if line_num == LINES_PER_SONNET:
-                    self.couplets.append(couplet)
-                    self.sonnets.append(sonnet)
-                    couplet = []
-                    sonnet = []
-                    next_sonnet = True
-                    line_num = 0
-                    sonnet_num += 1
+                sonnet.append(words)
+                # if line_num == LINES_PER_SONNET:
+                #     self.sonnets.append(sonnet)
+                #     sonnet = []
+                #     line_num = 0
+                #     sonnet_num += 1
 
     def tokenize(self, line):
         """Converts a line into a list of tokens."""
@@ -79,3 +65,10 @@ class SonnetParser():
                     self.word_to_num[t] = self.word_count
                     self.word_count += 1
         return words
+
+def is_roman_numeral(numeral):
+    for ch in numeral:
+        if ch not in "MDCLXVI()":
+            return False
+    return True
+
