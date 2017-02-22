@@ -1,5 +1,7 @@
 from sonetto.parser import SonnetParser
 
+# currently not accurate
+
 def test_shakespeare():
     """Tests the parser on some lines of Shakespeare."""
     sp = SonnetParser()
@@ -10,3 +12,4 @@ def test_shakespeare():
     for i, word in enumerate(line1):
         assert sp.num_to_word[i] == word
         assert sp.word_to_num[word] == i
+

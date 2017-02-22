@@ -43,11 +43,10 @@ class SonnetParser():
 
                 words = self.tokenize(line)
                 sonnet.append(words)
-                # if line_num == LINES_PER_SONNET:
-                #     self.sonnets.append(sonnet)
-                #     sonnet = []
-                #     line_num = 0
-                #     sonnet_num += 1
+
+    def compute_stanzas_and_couplets(self):
+        # TODO after parsing
+        pass
 
     def tokenize(self, line):
         """Converts a line into a list of tokens."""
