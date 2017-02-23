@@ -23,6 +23,12 @@ class SonnetParser():
         self.word_to_num = {}
         self.num_to_word = []
 
+        # HMM lists
+        self.hmm_sonnets = []
+        self.hmm_stanzas = []
+        self.hmm_couplets = []
+        self.hmm_lines = []
+
     def parse(self, fname, headers=True):
         """Parse a collection of sonnets."""
         with open(fname) as sonnet_file:
@@ -46,6 +52,7 @@ class SonnetParser():
                 sonnet.append(words)
                 self.lines.append(words)
         self.compute_stanzas_and_couplets()
+        self.compute_hmm_lists()
 
     def compute_stanzas_and_couplets(self):
         """Group words into sequences based on stanza and couplet."""
@@ -60,6 +67,12 @@ class SonnetParser():
 
             # Last two lines form the couplet
             self.couplets.append(sonnet[-2] + sonnet[-1])
+
+    def compute_hmm_lists(self):
+        """Convert lists to numbers for HMM"""
+        self.hmm_lines = [[self.word_to_num[word] for word in line]
+                          for line in self.lines]
+
 
     def tokenize(self, line):
         """Converts a line into a list of tokens."""
