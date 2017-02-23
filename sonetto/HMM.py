@@ -45,7 +45,7 @@ class HiddenMarkovModel:
     Class implementation of Hidden Markov Models.
     '''
 
-    def __init__(self, A, O):
+    def __init__(self, A, O, parser):
         '''
         Initializes an HMM. Assumes the following:
             - States and observations are integers starting from 0. 
@@ -62,6 +62,7 @@ class HiddenMarkovModel:
             O:          Observation matrix with dimensions L x D.
                         The (i, j)^th element is the probability of
                         emitting observation j given state i.
+            parser:     SonnetParser with HMM mapping and cmudict.
 
         Parameters:
             L:          Number of states.
@@ -78,6 +79,8 @@ class HiddenMarkovModel:
         self.A = A
         self.O = O
         self.A_start = [1. / self.L for i in range(self.L)]
+
+        self.parser = parser
 
     def viterbi(self, x):
         '''
@@ -403,7 +406,12 @@ class HiddenMarkovModel:
             for x in range(self.D):
                 cur_prob += self.O[y[i]][x]
                 if cur_prob > seed:
-                    emission += str(x)
+                    if i > 1: 
+                        emission += ' '
+                    emission += self.parser.num_to_word[x]
+                    # TODO: Use syllables instead of word count
+                    if i % 6 == 0:
+                        emission += '\n'
                     break
 
         return emission
@@ -499,7 +507,7 @@ def supervised_HMM(X, Y):
 
     return HMM
 
-def unsupervised_HMM(X, n_states):
+def unsupervised_HMM(parser, n_states):
     '''
     Helper function to train an unsupervised HMM. The function determines the
     number of unique observations in the given data, initializes
@@ -512,6 +520,8 @@ def unsupervised_HMM(X, n_states):
                     ranging from 0 to D - 1. In other words, a list of lists.
         n_states:   Number of hidden states to use in training.
     '''
+    X = parser.hmm_lines
+
     # Make a set of observations.
     observations = set()
     for x in X:
@@ -537,7 +547,7 @@ def unsupervised_HMM(X, n_states):
             O[i][j] /= norm
 
     # Train an HMM with unlabeled data.
-    HMM = HiddenMarkovModel(A, O)
+    HMM = HiddenMarkovModel(A, O, parser)
     HMM.unsupervised_learning(X)
 
     return HMM
