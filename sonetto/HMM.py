@@ -38,7 +38,7 @@ import random
 import sys
 
 # Constants for unsupervised learning
-NUM_ITERATIONS = 1000
+NUM_ITERATIONS = 10
 
 class HiddenMarkovModel:
     '''
