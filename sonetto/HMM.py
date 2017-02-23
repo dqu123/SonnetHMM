@@ -177,8 +177,9 @@ class HiddenMarkovModel:
                 for idx in range(self.L):
                     normal += alphas[length][idx]
 
-                for idx in range(self.L):
-                    alphas[length][idx] /= normal
+                if normal != 0:
+                    for idx in range(self.L):
+                        alphas[length][idx] /= normal
 
         return alphas
 
@@ -218,8 +219,9 @@ class HiddenMarkovModel:
                 normal = 0.
                 for idx in range(self.L):
                     normal += betas[length][idx]
-                for idx in range(self.L):
-                    betas[length][idx] /= normal
+                if normal != 0:
+                    for idx in range(self.L):
+                        betas[length][idx] /= normal
         return betas
 
     def supervised_learning(self, X, Y):
