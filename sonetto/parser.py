@@ -29,6 +29,7 @@ class SonnetParser():
             sonnet_num = 0
             line_num = 0
             sonnet = []
+            appended = True
             for line in sonnet_file:
                 # Ignore whitespace lines and sonnet headers
                 if line.strip() == '':
