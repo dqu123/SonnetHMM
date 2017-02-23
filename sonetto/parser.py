@@ -44,10 +44,22 @@ class SonnetParser():
 
                 words = self.tokenize(line)
                 sonnet.append(words)
+                self.lines.append(words)
+        self.compute_stanzas_and_couplets()
 
     def compute_stanzas_and_couplets(self):
-        # TODO after parsing
-        pass
+        """Group words into sequences based on stanza and couplet."""
+        for sonnet in self.sonnets:
+            stanza = []
+            for i, line in enumerate(sonnet):
+                if i < len(sonnet) - 2:
+                    stanza += line
+                    if (i + 1) % 4 == 0:
+                        self.stanzas.append(stanza)
+                        stanza = []
+
+            # Last two lines form the couplet
+            self.couplets.append(sonnet[-2] + sonnet[-1])
 
     def tokenize(self, line):
         """Converts a line into a list of tokens."""
