@@ -388,10 +388,10 @@ class HiddenMarkovModel:
         emission = ''
 
         # Initialize list of states
-        y = [0. for i in range(M)]
+        y = [0 for i in range(M + 1)]
         y[0] = random.randint(0, self.L - 1)
 
-        for i in range(1, M):
+        for i in range(1, M + 1):
             cur_prob = 0
             seed = random.random()
             
