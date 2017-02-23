@@ -406,7 +406,7 @@ class HiddenMarkovModel:
             for x in range(self.D):
                 cur_prob += self.O[y[i]][x]
                 if cur_prob > seed:
-                    if i > 1: 
+                    if i % 6 != 1: 
                         emission += ' '
                     emission += self.parser.num_to_word[x]
                     # TODO: Use syllables instead of word count
