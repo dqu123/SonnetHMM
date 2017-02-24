@@ -9,9 +9,9 @@ FILE = 'shakespeare'
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Makes Shakespearean Sonnets')
-    parser.add_argument('--states', type=int)
-    parser.add_argument('--iters', type=int)
-    parser.add_argument('--file')
+    parser.add_argument('-s', '--states', type=int)
+    parser.add_argument('-i', '--iters', type=int)
+    parser.add_argument('-f', '--file')
 
     args = parser.parse_args()
 
