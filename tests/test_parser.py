@@ -13,10 +13,9 @@ def test_shakespeare():
         assert sp.num_to_word[i] == word
         assert sp.word_to_num[word] == i
 
-    # Note: 'glutton' is not in cmudict, so it is omitted.
-    # Originally [or else this 'glutton' be...]
-    couplet1 = ['pity', 'the', 'world', 'or', 'else', 'this', 'be', 
-                'to', 'eat', 'the', 'world', 's', 'due', 'by', 'the', 
+    # Note: 'glutton' is not in cmudict.
+    couplet1 = ['pity', 'the', 'world', 'or', 'else', 'this', 'glutton',
+                'be', 'to', 'eat', 'the', 'world\'s', 'due', 'by', 'the',
                 'grave', 'and', 'thee']
     assert sp.couplets[0] == couplet1
 
