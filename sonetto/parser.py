@@ -1,5 +1,4 @@
 import re
-from nltk.corpus import cmudict
 
 from constants import (
     LINES_PER_STANZA,
@@ -16,8 +15,6 @@ class SonnetParser():
         self.stanzas = []
         self.couplets = []
         self.lines = []
-
-        self.dict = cmudict.dict()
 
         self.word_count = 0
         self.word_to_num = {}
@@ -70,12 +67,11 @@ class SonnetParser():
         words = []
         for token in tokens:
             t = token.lower()
-            if t in self.dict:
-                words.append(t)
-                if t not in self.word_to_num:
-                    self.num_to_word.append(t)
-                    self.word_to_num[t] = self.word_count
-                    self.word_count += 1
+            words.append(t)
+            if t not in self.word_to_num:
+                self.num_to_word.append(t)
+                self.word_to_num[t] = self.word_count
+                self.word_count += 1
         return words
 
 def is_roman_numeral(numeral):
