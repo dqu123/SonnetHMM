@@ -61,7 +61,7 @@ class SonnetParser():
     def tokenize(self, line):
         """Converts a line into a list of tokens."""
         # Replace punctuation with spaces
-        line = re.sub("[-?;:.,'!()]", " ", line)
+        line = re.sub("[-?;:.,!()]", " ", line)
         tokens = line.split()
 
         words = []
