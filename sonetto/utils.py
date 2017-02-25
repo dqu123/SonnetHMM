@@ -9,10 +9,24 @@ class Stress(Enum):
     UNSTRESS = 2
 
 def valid_meter(word, num_syl):
-    cur_syl = num_syl + 1
+    """Determine whether a word is valid based on meter."""
+    pronuncs = get_stress(word)
+    index = None
+    valid = False
+    if pronuncs is None:
+        return valid, index
 
-def num_syllables(word):
-    pass
+    for i, pronunc in enumerate(pronuncs):
+        valid_pronunc = True
+        for idx, stress in enumerate(pronunc):
+            if (((idx + num_syl) % 2 == 0 and stress == Stress.STRESS) or
+                    ((idx + num_syl) % 2 == 1 and stress == Stress.UNSTRESS)):
+                valid_pronunc = False
+        if valid_pronunc:
+            valid = True
+            index = i
+            break
+    return valid, index
 
 def get_stress(word):
     """Converts a word into a list of stresses"""
@@ -25,7 +39,9 @@ def get_stress(word):
         stresses.append([])
 
         for syl in pronunc:
-            if '1' in syl:
+            if '0' in syl:
+                stresses[-1].append(Stress.NO_STRESS)
+            elif '1' in syl:
                 stresses[-1].append(Stress.STRESS)
             elif '2' in syl:
                 stresses[-1].append(Stress.UNSTRESS)
