@@ -19,7 +19,7 @@ if __name__ == '__main__':
     sp.parse('{}{}.txt'.format(DATA_DIR, FILE))
 
     hmm = unsupervised_HMM(sp, n_states=args.states, n_iters=args.iters)
-    print hmm.generate_emission(84)
+    print hmm.generate_emission(14)
 
     with open('models/{}'.format(args.file), 'wb') as f:
         pickle.dump(hmm, f)

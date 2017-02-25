@@ -7,6 +7,14 @@
 ########################################
 
 import random
+from constants import (
+    SYLLABLES_PER_LINE,
+    SONNET_WORD_LIMIT,
+)
+from utils import (
+    valid_meter,
+    get_stress,
+)
 
 class HiddenMarkovModel:
     '''
@@ -315,10 +323,14 @@ class HiddenMarkovModel:
         emission = ''
 
         # Initialize list of states
-        y = [0 for i in range(M + 1)]
+        y = [0 for i in range(SONNET_WORD_LIMIT + 1)]
         y[0] = random.randint(0, self.L - 1)
 
-        for i in range(1, M + 1):
+        num_syl = 0
+        num_lines = 0
+        i = 0
+        while num_lines < M:
+            i += 1
             cur_prob = 0
             seed = random.random()
 
@@ -328,20 +340,38 @@ class HiddenMarkovModel:
                     y[i] = new_y
                     break
 
-            cur_prob = 0
-            seed = random.random()
-            for x in range(self.D):
-                cur_prob += self.O[y[i]][x]
-                if cur_prob > seed:
-                    if i % 6 != 1:
-                        emission += ' '
-                    emission += self.parser.num_to_word[x]
-                    # TODO: Use syllables instead of word count
-                    if i % 6 == 0:
-                        emission += '\n'
-                    break
+            # Meter requirement
+            valid = False
+            new_syl = 0
+            while not valid or new_syl > SYLLABLES_PER_LINE:
+                word = self.generate_word(y[i])
+                valid, idx = valid_meter(word, num_syl)
+                if valid:
+                    new_syl = num_syl + len(get_stress(word)[idx])
+
+            if num_syl == 0:
+                word = word.capitalize()
+            else:
+                emission += ' '
+
+            emission += word
+            num_syl = new_syl
+
+            if num_syl == SYLLABLES_PER_LINE:
+                emission += '\n'
+                num_syl = 0
+                num_lines += 1
 
         return emission
+
+    def generate_word(self, y):
+        '''Generate a word from state y'''
+        cur_prob = 0
+        seed = random.random()
+        for x in range(self.D):
+            cur_prob += self.O[y][x]
+            if cur_prob > seed:
+                return self.parser.num_to_word[x]
 
 def unsupervised_HMM(parser, n_states, n_iters):
     '''
