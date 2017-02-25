@@ -4,6 +4,7 @@ from nltk.corpus import cmudict
 diction = cmudict.dict()
 
 class Stress(Enum):
+    """Different types of stresses."""
     NO_STRESS = 0
     STRESS = 1
     UNSTRESS = 2
@@ -46,3 +47,24 @@ def get_stress(word):
             elif '2' in syl:
                 stresses[-1].append(Stress.UNSTRESS)
     return stresses
+
+def rhymes(word1, word2):
+    """Checks whether two words rhyme."""
+    if (word1 not in diction) or (word2 not in diction):
+        return False
+    pronuncs1 = diction[word1]
+    pronuncs2 = diction[word2]
+
+    rhyme = False
+    for p1 in pronuncs1:
+        for p2 in pronuncs2:
+            if strip_num(p1[-1]) == strip_num(p2[-1]):
+                if (len(p1) == 1 or len(p2) == 1 or
+                        strip_num(p1[-2]) == strip_num(p2[-2])):
+                    rhyme = True
+                    break
+    return rhyme
+
+def strip_num(string):
+    """Remove numbers from a string."""
+    return ''.join([char for char in string if not char.isdigit()])
