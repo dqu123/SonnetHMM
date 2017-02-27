@@ -13,10 +13,11 @@ def generate_cloud(hmm, hidden_state_num):
     import matplotlib.pyplot as plt
     plt.imshow(cloud)
     plt.axis('off')
-    plt.show()
+    plt.savefig('viz/state{}.png'.format(hidden_state_num))
 
 def gen_from_pickle(pickle_filename):
     f = open(pickle_filename, 'r')
     hmm = pickle.load(f)
-    generate_cloud(hmm, 0)
+    for i in range(hmm.L):
+        generate_cloud(hmm, i)
 
