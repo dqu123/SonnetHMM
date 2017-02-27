@@ -261,46 +261,6 @@ class HiddenMarkovModel:
                 for xt in range(self.D):
                     self.O[curr][xt] = O_num[curr][xt] / O_den[curr]
 
-    # def generate_emission(self, M):
-    #     '''
-    #     Generates an emission of length M, assuming that the starting state
-    #     is chosen uniformly at random.
-
-    #     Arguments:
-    #         M:          Length of the emission to generate.
-
-    #     Returns:
-    #         emission:   The randomly generated emission as a string.
-    #     '''
-
-    #     emission = ''
-    #     state = random.choice(range(self.L))
-
-    #     for t in range(M):
-    #         # Sample next observation.
-    #         rand_var = random.uniform(0, 1)
-    #         next_obs = 0
-
-    #         while rand_var > 0:
-    #             rand_var -= self.O[state][next_obs]
-    #             next_obs += 1
-
-    #         next_obs -= 1
-    #         emission += str(next_obs)
-
-    #         # Sample next state.
-    #         rand_var = random.uniform(0, 1)
-    #         next_state = 0
-
-    #         while rand_var > 0:
-    #             rand_var -= self.A[state][next_state]
-    #             next_state += 1
-
-    #         next_state -= 1
-    #         state = next_state
-
-    #     return emission
-
     def generate_emission(self, M):
         '''
         Generates an emission of length M, assuming that the starting state
