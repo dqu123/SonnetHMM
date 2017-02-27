@@ -20,6 +20,8 @@ class SonnetParser():
         self.word_to_num = {}
         self.num_to_word = []
 
+        self.TOTAL_WORDS = 0
+
         # HMM lists
         self.hmm_sonnets = []
         self.hmm_stanzas = []
