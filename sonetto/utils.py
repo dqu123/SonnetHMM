@@ -1,5 +1,6 @@
 from enum import Enum
 from nltk.corpus import cmudict
+import constants
 
 diction = cmudict.dict()
 
@@ -64,6 +65,19 @@ def rhymes(word1, word2):
                     rhyme = True
                     break
     return rhyme
+
+
+def is_valid(word, meter_valid, new_syl, num_lines, line_end):
+    """Determines if the word is valid."""
+    rhyme_valid = True
+
+    if (num_lines % 4) in [2, 3] and new_syl == constants.SYLLABLES_PER_LINE:
+        rhyme_valid = rhymes(word, line_end[num_lines - 2])
+    elif num_lines == constants.COUPLET_LINE and new_syl == constants.SYLLABLES_PER_LINE:
+        rhyme_valid = rhymes(word, line_end[num_lines - 1])
+
+    return (meter_valid and rhyme_valid and
+            new_syl <= constants.SYLLABLES_PER_LINE)
 
 def strip_num(string):
     """Remove numbers from a string."""

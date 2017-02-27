@@ -1,5 +1,7 @@
 import argparse
 import numpy as np
+import sonetto.constants
+import sonetto.utils
 
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Dropout
@@ -23,11 +25,11 @@ if __name__ == '__main__':
     sp = SonnetParser()
     sp.parse('{}{}.txt'.format(DATA_DIR, FILE))
 
-    seed = "from fairest creatures we desire increase that thereby beauty's rose might never die".split(' ')
-    print seed
+    # seed = "from fairest creatures we desire increase that thereby beauty's rose might never die".split(' ')
+    seed = ['' for i in range(30)]
+
     SEQ_LEN = len(seed)
     data = [item for sublist in sp.lines for item in sublist]
-    print data
 
     seq = []
     nxt = []
@@ -56,27 +58,56 @@ if __name__ == '__main__':
     optimizer = RMSprop(lr = 0.001)
     model.compile(loss = 'categorical_crossentropy', optimizer =optimizer)
 
-    model.fit(inp, out, batch_size=128, nb_epoch=20, verbose=2)
+    nb_epoch = 50
+
+    model.fit(inp, out, batch_size=128, nb_epoch=nb_epoch, verbose=2)
     newSeed = list(seed)
-    generated = list(seed)
-    for i in range(100):
-        genInput = np.zeros((1, SEQ_LEN, sp.word_count))
-        for j in range(len(newSeed)):
-            genInput[0][j][sp.word_to_num[newSeed[j]]] = 1 
+    generated = []
 
-        dist = model.predict(genInput)[0]
-        dist = np.asarray(dist).astype('float64')
-        logs = np.log(dist)
-        softmax = np.exp(logs) / np.sum(np.exp(logs))
-        multi = np.random.multinomial(1, softmax)
-        sample = np.argmax(multi)
 
-        pred = sp.num_to_word[sample]
+    num_lines = 0
+    line_end = []
+    max_tries = 500
+    while num_lines < sonetto.constants.LINES_PER_SONNET:
 
-        generated.append(pred)
+        syllables = 0
+        num_tries = 0
 
-        newSeed = newSeed[1: ]
-        newSeed.append(pred)
+        while syllables < sonetto.constants.SYLLABLES_PER_LINE:
+            genInput = np.zeros((1, SEQ_LEN, sp.word_count))
+            for j in range(len(newSeed)):
+                if newSeed[j] in sp.word_to_num:
+                    genInput[0][j][sp.word_to_num[newSeed[j]]] = 1 
+
+            dist = model.predict(genInput)[0]
+            dist = np.asarray(dist).astype('float64')
+            logs = np.log(dist)
+            softmax = np.exp(logs) / np.sum(np.exp(logs))
+            multi = np.random.multinomial(1, softmax)
+            sample = np.argmax(multi)
+
+
+            pred = sp.num_to_word[sample]
+
+            stresses = sonetto.utils.get_stress(pred)
+            meter_valid, idx = sonetto.utils.valid_meter(pred, syllables)
+            if not meter_valid:
+                continue
+            new_syl = syllables + len(stresses[idx])
+            valid = sonetto.utils.is_valid(pred, meter_valid, new_syl , num_lines, line_end)
+            if not valid:
+                num_tries += 1
+                if num_tries <= max_tries:
+                    continue
+            syllables += len(stresses[idx])
+            generated.append(pred)
+            newSeed = newSeed[1: ]
+            newSeed.append(pred)
+
+        print syllables
+        line_end.append(generated[-1])
+        generated.append('\n')
+        num_lines += 1
 
 
     print ' '.join(generated)

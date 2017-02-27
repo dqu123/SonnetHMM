@@ -20,7 +20,9 @@ if __name__ == '__main__':
     sp.parse('{}{}.txt'.format(DATA_DIR, FILE))
 
     hmm = unsupervised_HMM(sp, n_states=args.states, n_iters=args.iters)
-    print hmm.generate_emission(LINES_PER_SONNET)
 
     with open('models/{}'.format(args.file), 'wb') as f:
         pickle.dump(hmm, f)
+
+        
+    print hmm.generate_emission(LINES_PER_SONNET)
