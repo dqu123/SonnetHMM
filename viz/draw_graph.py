@@ -21,7 +21,7 @@ for (u, v, d) in G.edges(data=True):
             edgelists[i].append((u,v))
             break
 
-nx.draw_networkx_nodes(G, pos, node_color='b')
+nx.draw_networkx_nodes(G, pos, node_color='w')
 nx.draw_networkx_labels(G, pos)
 handles = []
 for i in range(5):
@@ -30,6 +30,6 @@ for i in range(5):
     handles.append(mpatches.Patch(color=color, label='{} - {}'.format(i * 1. / 5, (i+1) * 1. / 5)))
 
 plt.legend(handles=handles)
-
+plt.axis('off')
 plt.show()
 
